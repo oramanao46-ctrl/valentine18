@@ -73,13 +73,7 @@
         }
         @keyframes pulse { 50% { opacity: 0.6; transform: scale(0.95); } }
 
-        /* --- PAGE 2: TIMER & HEART --- */
-        .timer-display {
-            font-size: 1.1rem; color: var(--primary); 
-            background: white; padding: 15px 25px; border-radius: 50px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08); margin-bottom: 30px;
-            font-weight: 400; text-align: center; white-space: nowrap;
-        }
+        /* --- PAGE 2: HEART FILL --- */
         .heart-container {
             width: 220px; height: 200px; position: relative; cursor: pointer;
             transition: transform 0.1s; filter: drop-shadow(0 10px 20px rgba(255, 92, 138, 0.4));
@@ -147,7 +141,7 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             animation: zoomIn 0.3s ease;
         }
-        .modal-card img { width: 100%; border-radius: 3px; margin-bottom: 10px; }
+        .modal-card img { width: 100%; border-radius: 3px; margin-bottom: 15px; }
         .btn-keep {
             background: var(--primary); color: white; border: none;
             padding: 10px 25px; border-radius: 30px; font-family: 'Kanit';
@@ -159,7 +153,7 @@
         /* --- FINAL MESSAGE --- */
         .final-msg-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.9); 
+            background: rgba(255,255,255,0.95); 
             z-index: 200;
             display: flex; align-items: center; justify-content: center;
             opacity: 0; pointer-events: none;
@@ -186,8 +180,8 @@
         .final-msg-container.show-final { opacity: 1; pointer-events: auto; }
         .final-msg-container.show-final .final-msg-box { transform: scale(1) translateY(0); opacity: 1; }
 
-        .final-msg-box h1 { color: var(--primary); font-size: 1.8rem; margin-bottom: 15px; }
-        .final-msg-box p { font-size: 1.05rem; line-height: 1.6; color: #555; margin: 0; }
+        .final-msg-box h1 { color: var(--primary); font-size: 1.6rem; margin-bottom: 15px; line-height: 1.4; }
+        .final-msg-box p { font-size: 1rem; line-height: 1.7; color: #555; margin: 0; }
 
     </style>
 </head>
@@ -208,8 +202,7 @@
     </div>
 
     <div id="page2" class="page">
-        <h2 style="margin-bottom:20px;">Happy Valentine’s Day darling</h2>
-        <div class="timer-display" id="timer">คำนวณเวลา...</div>
+        <h2 style="margin-bottom:40px; text-align:center;">Happy Valentine’s Day darling</h2>
         <div class="heart-container" onclick="fillHeart()">
             <svg viewBox="0 0 200 200" width="100%" height="100%">
                 <defs>
@@ -251,7 +244,7 @@
     <div class="modal-overlay" id="previewModal">
         <div class="modal-card">
             <img src="" id="previewImg">
-            <p id="previewCaption" style="font-weight:600; color:#555; margin:0; white-space: pre-line;">...</p>
+            <p id="previewCaption" style="font-weight:600; color:#555; margin:0; white-space: pre-line; line-height:1.6;">...</p>
             <button class="btn-keep" onclick="confirmKeep()">เก็บใส่กระเป๋า ❤️</button>
         </div>
     </div>
@@ -274,8 +267,7 @@
     </div>
 
     <script>
-        // --- CONFIG ---
-        const startDate = new Date(2025, 1, 14); // วันที่ 14 ก.พ. 2025
+        // --- CONFIG (Captions Fixed) ---
         const photos = [
             { src: "photo1.jpg", caption: "ขอบคุณนะคะที่เข้ามาในชีวิตหนู" },
             { src: "photo2.jpg", caption: "การที่มีพี่อยู่ในชีวิต\nมันดีมากๆเลยนะ❤️" },
@@ -284,7 +276,7 @@
             { src: "photo5.jpg", caption: "รักพี่นะคะเจ้าชายกบของหนู" }
         ];
 
-        // --- GLOBAL: AUDIO & BACKGROUND ---
+        // --- AUDIO & BACKGROUND ---
         let audioPlaying = false;
         function playAudio() {
             if(!audioPlaying) {
@@ -321,7 +313,6 @@
                 const p = document.getElementById(id);
                 p.classList.add('active');
                 p.style.opacity = 1;
-                if(id==='page2') startTimer();
                 if(id==='page3') startScratch();
             }, 500);
         }
@@ -342,19 +333,8 @@
         }
         env.onclick = () => goTo('page2');
 
-        // --- PAGE 2: TIMER ---
+        // --- PAGE 2: HEART ---
         let percent = 0;
-        function startTimer() {
-            setInterval(() => {
-                const now = new Date();
-                const diff = now - startDate;
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const h = Math.floor((diff / (1000*60*60)) % 24);
-                const m = Math.floor((diff / (1000*60)) % 60);
-                const s = Math.floor((diff / 1000) % 60);
-                document.getElementById('timer').innerText = `${days} วัน ${h} ชั่วโมง ${m} นาที ${s} วินาที`;
-            }, 1000);
-        }
         function fillHeart() {
             percent += 20; if(percent > 100) percent = 100;
             document.getElementById('waterLevel').setAttribute('y', 200 - (200 * (percent/100)));
@@ -379,7 +359,7 @@
             c.addEventListener('touchstart', (e)=>{down();e.preventDefault()}); c.addEventListener('touchend', up); c.addEventListener('touchmove', move);
         }
 
-        // --- PAGE 4: GALLERY LOGIC ---
+        // --- PAGE 4: GALLERY ---
         let currentPhotoIdx = 0; let currentElement = null; let collected = 0;
         function foundPhoto(idx, el) {
             currentPhotoIdx = idx; currentElement = el;
